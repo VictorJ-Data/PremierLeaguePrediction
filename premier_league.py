@@ -18,4 +18,8 @@ premier_league_df.describe()
 
 le_temp = LabelEncoder()
 premier_league_df["results_encoded"] = le_temp.fit_transform(premier_league_df["results"])
-premier_league_df.corr(numeric_only=True)["results_encoded"]
+premier_league_df.corr(numeric_only=True)["results_encoded"].sort_values
+
+premier_league_df["HomeGoals"].hist(bins=10)
+plt.title('distribution but à domicile')
+plt.show()
