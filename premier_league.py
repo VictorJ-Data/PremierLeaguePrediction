@@ -23,3 +23,9 @@ premier_league_df.corr(numeric_only=True)["results_encoded"].sort_values
 premier_league_df["HomeGoals"].hist(bins=10)
 plt.title('distribution but à domicile')
 plt.show()
+
+print()
+premier_league_df["Date"] = pd.to_datetime(premier_league_df["Date"])
+
+
+premier_league_df["home_goals_avg"] = premier_league_df.groupby("Home")["HomeGoals"].transform(lambda x: x.shift(1).rolling(5, min_periods=1).mean()
