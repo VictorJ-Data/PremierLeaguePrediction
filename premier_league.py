@@ -2,6 +2,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 from sklearn.preprocessing import LabelEncoder
 from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LogisticRegression
 
 premier_league_df = pd.read_csv("premier-league-matches.csv")
 
@@ -40,4 +41,13 @@ premier_league_df["home_encoded"] = le_temp.fit_transform(premier_league_df["Hom
 premier_league_df["away_encoded"] = le_temp.fit_transform(premier_league_df["Away"])
 premier_league_df["results_encoded"] = le_temp.fit_transform(premier_league_df["results"])
 
-print(premier_league_df)
+features = ["home_encoded", "away_encoded",
+            "home_goals_avg", "away_goals_avg",
+            "home_conceded_avg","away_conceded_avg"]
+
+X = premier_league_df[features]
+y = premier_league_df["results_encoded"]
+
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.2, random_state=42
+)
