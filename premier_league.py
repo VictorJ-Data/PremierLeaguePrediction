@@ -13,8 +13,8 @@ print(premier_league_df.isnull().sum())
 
 premier_league_df["results"] = premier_league_df["FTR"].map({"H": "Home Win", "A": "Away Win", "D": "Draw"})
 
-print(premier_league_df["results"].value_counts())
-print(premier_league_df["results"].value_counts(normalize=True).round(3))
+#print(premier_league_df["results"].value_counts())
+#print(premier_league_df["results"].value_counts(normalize=True).round(3))
 
 premier_league_df.describe()
 
@@ -24,7 +24,7 @@ premier_league_df.corr(numeric_only=True)["results_encoded"].sort_values
 
 premier_league_df["HomeGoals"].hist(bins=10)
 plt.title('distribution but à domicile')
-plt.show()
+#plt.show()
 
 
 premier_league_df["Date"] = pd.to_datetime(premier_league_df["Date"])
@@ -51,3 +51,12 @@ y = premier_league_df["results_encoded"]
 X_train, X_test, y_train, y_test = train_test_split(
     X, y, test_size=0.2, random_state=42
 )
+
+model = LogisticRegression(max_iter=1000)
+model.fit(X_train, y_train)
+
+predictions = model.predict(X_test)
+pred_labels = le_temp.inverse_transform(predictions[:10])
+
+print("\n\nVoici les label prédit\n")
+print(pred_labels)
