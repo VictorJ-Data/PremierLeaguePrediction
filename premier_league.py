@@ -1,8 +1,10 @@
 import pandas as pd
+import seaborn as sns
 import matplotlib.pyplot as plt
 from sklearn.preprocessing import LabelEncoder
 from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LogisticRegression
+from sklearn.metrics import accuracy_score, classification_report, confusion_matrix
 
 premier_league_df = pd.read_csv("premier-league-matches.csv")
 
@@ -19,6 +21,7 @@ premier_league_df["results"] = premier_league_df["FTR"].map({"H": "Home Win", "A
 premier_league_df.describe()
 
 le_temp = LabelEncoder()
+
 premier_league_df["results_encoded"] = le_temp.fit_transform(premier_league_df["results"])
 premier_league_df.corr(numeric_only=True)["results_encoded"].sort_values
 
@@ -37,9 +40,13 @@ premier_league_df["away_conceded_avg"] = premier_league_df.groupby("Away")["Home
 
 premier_league_df = premier_league_df.dropna()
 
-premier_league_df["home_encoded"] = le_temp.fit_transform(premier_league_df["Home"])
-premier_league_df["away_encoded"] = le_temp.fit_transform(premier_league_df["Away"])
-premier_league_df["results_encoded"] = le_temp.fit_transform(premier_league_df["results"])
+le_home = LabelEncoder()
+le_away = LabelEncoder()
+le_res = LabelEncoder()
+
+premier_league_df["home_encoded"] = le_home.fit_transform(premier_league_df["Home"])
+premier_league_df["away_encoded"] = le_away.fit_transform(premier_league_df["Away"])
+premier_league_df["results_encoded"] = le_res.fit_transform(premier_league_df["results"])
 
 features = ["home_encoded", "away_encoded",
             "home_goals_avg", "away_goals_avg",
@@ -56,7 +63,27 @@ model = LogisticRegression(max_iter=1000)
 model.fit(X_train, y_train)
 
 predictions = model.predict(X_test)
-pred_labels = le_temp.inverse_transform(predictions[:10])
+pred_labels = le_res.inverse_transform(predictions[:10])
 
-print("\n\nVoici les label prédit\n")
+
+
+
+print("\n","#"*25, "START", "#"*25,"\n")
+print("Voici les label prédit")
 print(pred_labels)
+print("\n","#"*25, "END", "#"*25)
+
+print("\n","#"*25, "START", "#"*25,"\n")
+print("Précision du score du modèle")
+print(accuracy_score(y_test, predictions))
+print("\n","#"*25, "END", "#"*25)
+
+
+print("\n","#"*25, "START", "#"*25,"\n")
+print("Rapport de classification")
+print(classification_report(y_test, predictions, target_names=le_res.classes_))
+print("\n","#"*25, "END", "#"*25)
+
+cm = confusion_matrix(y_test, predictions)
+sns.heatmap(cm, annot=True, fmt="d", xticklabels=["Away Win", "Draw", "Home Win"],
+            yticklabels=["Away Win", "Draw", "Home Win"])
