@@ -87,3 +87,4 @@ print("\n","#"*25, "END", "#"*25)
 cm = confusion_matrix(y_test, predictions)
 sns.heatmap(cm, annot=True, fmt="d", xticklabels=["Away Win", "Draw", "Home Win"],
             yticklabels=["Away Win", "Draw", "Home Win"])
+plt.show()
